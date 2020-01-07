@@ -43,7 +43,7 @@ def setrun(claw_pkg='geoclaw'):
 
     rundata = data.ClawRunData(claw_pkg, num_dim)
 
-    topofile = 'topos/TetonLarge.topo'
+    topofile = ['topos/TetonDamLatLong.topo','topos/TetonLarge.topo']
 
     #------------------------------------------------------------------
     # GeoClaw specific parameters:
@@ -68,7 +68,7 @@ def setrun(claw_pkg='geoclaw'):
     # Number of space dimensions:
     clawdata.num_dim = num_dim
 
-    m_topo,n_topo,xllcorner,yllcorner,cellsize = tools.read_topo_data(topofile)
+    # m_topo,n_topo,xllcorner,yllcorner,cellsize = tools.read_topo_data(topofile)
 
 
     # Topo info (TetonDamLatLong.topo)
@@ -77,6 +77,14 @@ def setrun(claw_pkg='geoclaw'):
     # xllcorner = -112.390734400000
     # yllcorner = 43.581746970335
     # cellsize = 0.000277729665
+
+    # Topo info (TetonLarge.topo)
+    m_topo = 3996
+    n_topo = 2988
+    xllcorner = -112.360138888891
+    yllcorner = 43.170138888889
+    cellsize = 0.000277729665
+
 
     # Derived info from the topo map
     mx_topo = m_topo - 1
@@ -173,10 +181,10 @@ def setrun(claw_pkg='geoclaw'):
 
     if clawdata.output_style == 1:
         # Output nout frames at equally spaced times up to tfinal:
-        n_hours = 2.0
-        frames_per_minute = 60.0/5.0 # Frames every 5 seconds
-        clawdata.num_output_times = int(frames_per_minute*60*n_hours)  # Plot every 10 seconds
-        clawdata.tfinal = 60*60*n_hours
+        n_hours = 4.0
+        frames_per_minute = 60.0/60.0 # Frames every 60 seconds
+        clawdata.num_output_times = int(frames_per_minute*60*n_hours)  # Number of output frames
+        clawdata.tfinal = 60*60*n_hours  # Total number of seconds
         clawdata.output_t0 = True  # output at initial (or restart) time?
 
     elif clawdata.output_style == 2:
@@ -466,7 +474,7 @@ def setgeo(rundata):
         raise AttributeError("Missing geo_data attribute")
 
 
-    topofile = 'topos/TetonLarge.topo'
+    topofile = ['topos/TetonDamLatLong.topo','topos/TetonLarge.topo']
 
     # == Physics ==
     geo_data.gravity = 9.81
@@ -495,7 +503,10 @@ def setgeo(rundata):
     # for topography, append lines of the form
     #    [topotype, minlevel, maxlevel, t1, t2, fname]
 
-    topo_data.topofiles.append([2, 1, 10, 0, 1e10, topofile])
+    topofile = ['topos/TetonDamLatLong.topo','topos/TetonLarge.topo']
+
+    for t in topofile:
+        topo_data.topofiles.append([2, 1, 10, 0, 1e10, t])
 
 
     # == setdtopo.data values ==
